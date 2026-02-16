@@ -1,0 +1,526 @@
+{
+  "name": "LLM Summarization for News",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        304,
+        1104
+      ],
+      "id": "f96f3450-4f7f-4276-b3d5-15b3b1a11e65",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SnhbEmnOzlGx8wLz",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "maxItems": 3
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        928
+      ],
+      "id": "0dda7760-9173-4aef-b2da-168cc8043fa2",
+      "name": "Limit1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an expert financial news analyzer and summarizer.>> From the article provided, extract only the most relevant information and structure it in the exact order below. Do not add opinions, assumptions, or extra commentary.>> For each relevant company mentioned:>> 1. Identify the **ticker symbol**> 2. Identify the **sector**> 3. Identify the **primary actionable catalyst** (e.g., earnings, M&A, FDA decision, guidance change, regulatory update, product launch, government action, or major business event) > 4. Provide a **short factual summary** of what happened>> The summary must be **no more than 200 characters** and must not include phrases like “the article discusses,” “the article says,” or “in this article.”>> If no clear ticker is mentioned, respond with: “TICKER: N/A.”>> Output strictly in this format and no other text:>>TITLE: <title>>🏷TICKER: <ticker>>🏭 SECTOR: <sector>> ⚡CATALYST: <brief catalyst>> 📝SUMMARY: <short summary > Direction:<Bullish ,neutral or Bearish with short reason>>|"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        304,
+        896
+      ],
+      "id": "2ce5e92e-a83c-4d39-9bd4-c464ece282c5",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ewOC7sf2eNjeOi0Xum2rFmllwNrfUPQOd7JMxLBLBWo",
+          "mode": "list",
+          "cachedResultName": "llm test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ewOC7sf2eNjeOi0Xum2rFmllwNrfUPQOd7JMxLBLBWo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ewOC7sf2eNjeOi0Xum2rFmllwNrfUPQOd7JMxLBLBWo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "pubdate": "={{ $json.pubDate }}",
+            "title": "={{ $json.title }}",
+            "text": "={{ $json.text }}",
+            "link": "={{ $json.link }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "pubdate",
+              "displayName": "pubdate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "text",
+              "displayName": "text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        1008
+      ],
+      "id": "e7027672-32c3-4e10-b72f-e5fd54fc4be3",
+      "name": "Append row in sheet3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "X4lYJYDkX18XU1Ou",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "*"
+        ],
+        "additionalFields": {}
+      },
+      "id": "3a535ce3-25df-42f5-bef3-c16154c6d9ec",
+      "name": "Telegram Bot Trigger1",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1216,
+        944
+      ],
+      "webhookId": "f4dcce8f-e884-438a-a78f-c4b04fd9eec9",
+      "credentials": {
+        "telegramApi": {
+          "id": "e42Yhxuk1q0TY3YK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "messageText",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "chatId",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "number"
+            },
+            {
+              "id": "id-3",
+              "name": "userId",
+              "value": "={{ $json.message.from.id }}",
+              "type": "number"
+            },
+            {
+              "id": "id-4",
+              "name": "userName",
+              "value": "={{ $json.message.from.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "messageDate",
+              "value": "={{ $json.message.date }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c21132dc-a10f-4a1e-9dad-7a1066d27bcb",
+      "name": "Extract Message Data1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -976,
+        944
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\"json\": { \"feed\": \"https://finance.yahoo.com/news/rssindex\" }},  \n  {\"json\": { \"feed\": \"https://news.yahoo.com/rss/finance\" }},  \n  \n  {\"json\": { \"feed\": \"http://feeds.marketwatch.com/marketwatch/topstories/\" }},\n  {\"json\": { \"feed\": \"https://www.investing.com/rss/news_25.rss\" }}, \n  {\"json\": { \"feed\": \"https://www.cnbc.com/id/100003114/device/rss/rss.html\" }},\n \n \n  \n\n\n    \n  ]\n  \n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -768,
+        944
+      ],
+      "id": "892a2221-8f88-4440-be4c-83f568f837ee",
+      "name": "RSS Feeds"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -560,
+        944
+      ],
+      "id": "d9164028-7dc1-42c6-a83c-6aee8968eb0b",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.feed }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -272,
+        1120
+      ],
+      "id": "7fd4184a-8ab5-4e6c-9ec9-639797568129",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.link }}",
+        "options": {}
+      },
+      "id": "be867764-6dd7-4e9a-a97a-d314586b8c92",
+      "name": "Get Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -112,
+        928
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "af3c98b5-8f8c-4520-8dac-a67a9ccef2cc",
+              "name": "pubDate",
+              "value": "={{ $('Limit1').item.json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "60ae86bd-3476-4157-ac27-b036a4ea924f",
+              "name": "title",
+              "value": "={{ $('Limit1').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "0f0fb615-32a1-4ab2-ab22-6172f4e645bd",
+              "name": "text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "403acb21-4bd2-454d-95b9-38a4f6e412ef",
+              "name": "link",
+              "value": "={{ $('Limit1').item.json.link }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        896
+      ],
+      "id": "78a4e923-725a-4559-a92b-3bac51662cd2",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Bot Trigger1').item.json.message.from.id }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "disable_notification": true
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1104,
+        768
+      ],
+      "id": "bff4e503-98ad-46ce-a34d-f6d4782aec9b",
+      "name": "Send a text message",
+      "webhookId": "37e4bf01-7870-44ee-b599-2cf12abbe0cf",
+      "credentials": {
+        "telegramApi": {
+          "id": "e42Yhxuk1q0TY3YK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "html": "={{ $json.data }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        112,
+        1008
+      ],
+      "id": "8f5730a9-973f-41d6-adda-f917931565e7",
+      "name": "Markdown"
+    },
+    {
+      "parameters": {
+        "url": "{\"json\": { \"feed\": \"https://news.yahoo.com/rss/finance\" }}, ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -688,
+        656
+      ],
+      "id": "6e500dd0-8886-4e08-9de7-85749e08b0c3",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "Get Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Bot Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Extract Message Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Message Data1": {
+      "main": [
+        [
+          {
+            "node": "RSS Feeds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feeds": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Content": {
+      "main": [
+        [
+          {
+            "node": "Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append row in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet3": {
+      "main": [
+        []
+      ]
+    },
+    "Markdown": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "58ed8778-a1cd-4af4-bc8b-4a36bbc507a9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d3e52041e0a84bc6303a13687799d0c179ddcbfc02c879388eb6b675aa78ed7e"
+  },
+  "id": "XososBWn2gax7MrXFq4y5",
+  "tags": []
+}
